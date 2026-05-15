@@ -973,6 +973,66 @@ app.get('/api/admin/reviews', (req, res) => {
     });
 });
 
+app.get('/api/admin/clients/:id/details', (req, res) => {
+    const clientId = req.params.id;
+
+    const queryClient = `SELECT * FROM client WHERE id_client = ?`;
+    
+    const queryStats = `
+        SELECT 
+            COUNT(id_cursa) AS total_curse, 
+            COALESCE(SUM(pret_final), 0) AS bani_cheltuiti 
+        FROM cursa 
+        WHERE client_id_client = ? AND status = 'Finalizat'
+    `;
+
+    // CORECTAT: Folosim 'plecare' și 'destinatie' conform SQL-ului tău
+    const queryCurse = `
+        SELECT id_cursa, plecare, destinatie, pret_final, status 
+        FROM cursa 
+        WHERE client_id_client = ? 
+        ORDER BY id_cursa DESC
+    `;
+
+    // CORECTAT: Verifică dacă în tabelul recenzie coloana se numește id_cursa sau cursa_id_cursa
+    // Presupunem că se numește cursa_id_cursa conform convenției tale de denumire (tabel_id)
+    const queryRecenzii = `
+        SELECT r.* FROM recenzie r
+        JOIN cursa c ON r.cursa_id_cursa = c.id_cursa
+        WHERE c.client_id_client = ?
+        ORDER BY r.id_recenzie DESC
+    `;
+
+    db.query(queryClient, [clientId], (err1, clientRes) => {
+        if (err1) return res.status(500).json({ error: err1.message });
+        if (clientRes.length === 0) return res.status(404).json({ error: 'Client negăsit' });
+
+        db.query(queryStats, [clientId], (err2, statsRes) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+
+            db.query(queryCurse, [clientId], (err3, curseRes) => {
+                if (err3) return res.status(500).json({ error: err3.message });
+
+                db.query(queryRecenzii, [clientId], (err4, recenziiRes) => {
+                    if (err4) {
+                        // Dacă dă eroare aici, înseamnă că în recenzie coloana e diferită
+                        // Încercăm să trimitem măcar restul datelor fără recenzii pentru a nu bloca pagina
+                        console.error("Eroare recenzii:", err4.message);
+                        return res.json({ client: clientRes[0], stats: statsRes[0], curse: curseRes, recenzii: [] });
+                    }
+
+                    res.json({
+                        client: clientRes[0],
+                        stats: statsRes[0],
+                        curse: curseRes,
+                        recenzii: recenziiRes
+                    });
+                });
+            });
+        });
+    });
+});
+
 // B. Ștergere recenzie (Moderare)
 app.delete('/api/admin/reviews/:id', (req, res) => {
     const query = 'DELETE FROM recenzie WHERE id_recenzie = ?';

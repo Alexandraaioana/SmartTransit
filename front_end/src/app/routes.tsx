@@ -19,6 +19,7 @@ import AdminDiscounts from "./pages/admin/AdminDiscounts";
 import DriverReviews from "./pages/driver/Review";
 import AdminHistory from "./pages/admin/AdminHistory";
 import AdminReviews from "./pages/admin/AdminReviews";
+import AdminClientDetails from './pages/admin/AdminClientDetails';
 
 export const router = createHashRouter([
   {
@@ -52,6 +53,10 @@ export const router = createHashRouter([
       {
         path: 'reviews',
         element: <AdminReviews />
+      },
+      {
+        path: "/admin/client/:id",
+        element: <AdminClientDetails />,
       },
       {
         path: 'discounts',

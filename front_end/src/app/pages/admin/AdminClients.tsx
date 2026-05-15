@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router';
+import { Eye } from 'lucide-react';
 
 export default function AdminClients() {
   const [clients, setClients] = useState([]);
@@ -153,7 +155,18 @@ export default function AdminClients() {
                     {c.activ === 1 ? 'Activ' : 'Inactiv'}
                   </span>
                 </td>
-                <td className="p-4 text-right space-x-2">
+                <td className="p-4 text-right space-x-3 flex justify-end items-center">
+                  
+                  {/* BUTONUL NOU: VEZI DETALII */}
+                  <Link 
+                    to={`/admin/client/${c.id_client}`} 
+                    className="p-1 text-slate-500 hover:text-blue-600 transition-colors"
+                    title="Vezi istoric complet"
+                  >
+                    <Eye size={20} />
+                  </Link>
+
+                  {/* BUTOANELE EXISTENTE */}
                   <button onClick={() => { setFormData(c); setIsEditing(true); }} className="text-blue-600 hover:underline">Editează</button>
                   
                   {c.activ === 1 ? (
