@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createHashRouter } from "react-router";
 import Login from "./pages/Login";
 import ClientLayout from "./components/ClientLayout";
 import DriverLayout from "./components/DriverLayout";
@@ -20,7 +20,7 @@ import DriverReviews from "./pages/driver/Review";
 import AdminHistory from "./pages/admin/AdminHistory";
 import AdminReviews from "./pages/admin/AdminReviews";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: '/admin/login',
     element: <AdminLogin />
