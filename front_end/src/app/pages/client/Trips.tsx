@@ -1,4 +1,4 @@
-import { MapPin, Calendar, Star, Navigation } from 'lucide-react';
+import { MapPin, Calendar, Navigation } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function ClientTrips() {
@@ -6,7 +6,6 @@ export default function ClientTrips() {
   const [trips, setTrips] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Preluăm istoricul din baza de date când componenta se montează
   useEffect(() => {
     const fetchTrips = async () => {
       try {
@@ -34,9 +33,7 @@ export default function ClientTrips() {
     fetchTrips();
   }, []);
 
-  if (loading) {
-    return <div className="p-8 text-center text-gray-500">Se încarcă istoricul curselor...</div>;
-  }
+  if (loading) return <div className="p-8 text-center text-gray-500">Se încarcă istoricul curselor...</div>;
 
   return (
       <div className="p-8 max-w-6xl mx-auto">
@@ -49,14 +46,8 @@ export default function ClientTrips() {
         ) : (
             <div className="space-y-4">
               {trips.map((trip) => (
-                  <div
-                      key={trip.id}
-                      className="bg-card rounded-lg border border-border overflow-hidden transition-all hover:shadow-md bg-white"
-                  >
-                    <div
-                        className="p-6 cursor-pointer"
-                        onClick={() => setSelectedTrip(selectedTrip === trip.id ? null : trip.id)}
-                    >
+                  <div key={trip.id} className="bg-card rounded-lg border border-border overflow-hidden transition-all hover:shadow-md bg-white">
+                    <div className="p-6 cursor-pointer" onClick={() => setSelectedTrip(selectedTrip === trip.id ? null : trip.id)}>
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2 text-sm text-muted-foreground text-gray-500">
@@ -77,9 +68,24 @@ export default function ClientTrips() {
                           </div>
                         </div>
 
+                        {/* AICI ESTE LOGICA DE DISCOUNT PENTRU CLIENT */}
                         <div className="text-right">
-                          <div className="text-2xl font-bold mb-1 text-gray-800">{trip.price?.toFixed(2)} LEI</div>
-                          <div className="text-sm text-gray-500 mb-2">
+                          {trip.cod_discount ? (
+                              <div className="flex flex-col items-end">
+                                <div className="text-sm font-bold text-gray-400 line-through decoration-red-500 decoration-[3px] mb-1">
+                                  {trip.old_price?.toFixed(2)} LEI
+                                </div>
+                                <div className="text-2xl font-bold text-green-600 mb-1">
+                                  {trip.price?.toFixed(2)} LEI
+                                </div>
+                                <div className="text-[11px] font-bold text-green-800 bg-green-100 border border-green-200 px-2 py-0.5 rounded-md uppercase tracking-wider mb-2">
+                                  Cod: {trip.cod_discount}
+                                </div>
+                              </div>
+                          ) : (
+                              <div className="text-2xl font-bold mb-1 text-gray-800">{trip.price?.toFixed(2)} LEI</div>
+                          )}
+                          <div className="text-sm text-gray-500 mt-1">
                             {trip.distance} km
                           </div>
                         </div>
@@ -103,7 +109,6 @@ export default function ClientTrips() {
             </div>
         )}
 
-        {/* SECȚIUNEA DE STATISTICI DINAMICE */}
         {trips.length > 0 && (
             <div className="mt-8 bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
               <h3 className="mb-4 font-bold text-gray-800">Trip Statistics</h3>
