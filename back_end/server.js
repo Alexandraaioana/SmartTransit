@@ -362,15 +362,17 @@ app.get('/api/driver-reviews/:id_sofer', (req, res) => {
         });
     });
 // 4. ruta de terminare a calatoriei(update status 'Ride Finished')
+// 4. ruta de terminare a calatoriei (update status 'Ride Finished' si Calcul Discount)
     app.post('/api/end-ride', (req, res) => {
         const { id_cursa, id_sofer } = req.body;
         const oraDestinatie = new Date().getHours();
 
-        // Preluăm prețul, tips-ul și METODA DE PLATĂ a clientului (prin JOIN)
+        // Preluăm detalii + metoda de plată + eventualul discount aplicat
         const getQuery = `
-            SELECT c.pret_estimat, c.tips, cl.metoda_plata 
+            SELECT c.pret_estimat, c.tips, cl.metoda_plata, c.cod_discount, d.valoare, d.tip_valoare
             FROM cursa c
-            JOIN client cl ON c.client_id_client = cl.id_client
+                     JOIN client cl ON c.client_id_client = cl.id_client
+                     LEFT JOIN discount d ON c.cod_discount = d.cod_discount AND d.data_expirare >= NOW()
             WHERE c.id_cursa = ?
         `;
 
@@ -378,36 +380,51 @@ app.get('/api/driver-reviews/:id_sofer', (req, res) => {
             if (err) return res.status(500).json({ success: false, message: err.message });
             if (results.length === 0) return res.status(404).json({ success: false, message: "Cursa nu a fost găsită" });
 
-            const pretEstimat = results[0].pret_estimat;
-            const tipsClient = results[0].tips || 0;
-            const metodaPlata = results[0].metoda_plata || 'Cash'; // Default numerar dacă nu a ales nimic
+            const rideData = results[0];
+            const pretEstimat = rideData.pret_estimat;
+            const tipsClient = rideData.tips || 0;
+            const metodaPlata = rideData.metoda_plata || 'Cash';
 
             // Fluctuatia de pret +/- 10 lei
             const variatieRandom = Math.floor(Math.random() * 21) - 10;
-            let pretFinal = pretEstimat + variatieRandom;
-            if (pretFinal < 5) pretFinal = 5;
 
+            // 1. PRETUL PENTRU SOFER (Câștigă suma întreagă)
+            let pretFinalSofer = pretEstimat + variatieRandom;
+            if (pretFinalSofer < 5) pretFinalSofer = 5;
+
+            // 2. PRETUL PENTRU CLIENT (Aplicăm reducerea dacă există)
+            let pretFinalClient = pretFinalSofer;
+            if (rideData.cod_discount && rideData.valoare) {
+                if (rideData.tip_valoare === 'procent') {
+                    pretFinalClient = pretFinalClient - (pretFinalClient * (rideData.valoare / 100));
+                } else if (rideData.tip_valoare === 'fix') {
+                    pretFinalClient = pretFinalClient - rideData.valoare;
+                }
+                // Ne asigurăm că prețul nu scade sub 0 lei
+                if (pretFinalClient < 0) pretFinalClient = 0;
+            }
+
+            // Salvăm PRET_FINAL_SOFER în tabelul "cursa" ca să apară corect la câștigurile lui
             const updateCursa = "UPDATE cursa SET status = 'Ride Finished', ora_destinatie = ?, pret_final = ? WHERE id_cursa = ?";
 
-            db.query(updateCursa, [oraDestinatie, pretFinal, id_cursa], (err) => {
-                if (err) return res.status(500).json({ success: false, message: err.message });
+            db.query(updateCursa, [oraDestinatie, pretFinalSofer, id_cursa], (errUpdate) => {
+                if (errUpdate) return res.status(500).json({ success: false, message: errUpdate.message });
 
-                // Aici în loc de 'Card' hardcodat, punem variabila "metodaPlata" (care e Card sau Cash)
+                // Salvăm PRET_FINAL_CLIENT în tabelul "plata" - asta este factura lui
                 const insertPlata = `
                     INSERT INTO plata (cursa_id_cursa, metoda_plata, data_ora, status, suma, tips)
                     VALUES (?, ?, NOW(), 1, ?, ?)
                 `;
 
-                db.query(insertPlata, [id_cursa, metodaPlata, pretFinal, tipsClient], (errPlata) => {
-                    if (errPlata) console.error("Eroare la înregistrarea plății:", errPlata.message);
+                db.query(insertPlata, [id_cursa, metodaPlata, pretFinalClient, tipsClient], (errPlata) => {
+                    if (errPlata) console.error("Eroare plata:", errPlata.message);
 
                     const updateSofer = "UPDATE sofer SET status = 'online' WHERE id_sofer = ?";
                     db.query(updateSofer, [id_sofer], (errSofer) => {
-                        if (errSofer) console.error("Eroare update status sofer:", errSofer);
                         res.json({
                             success: true,
                             message: "Cursă finalizată și plată înregistrată!",
-                            pret_cursa: pretFinal,
+                            pret_cursa: pretFinalClient, // Trimitem înapoi prețul cu reducere
                             tips: tipsClient,
                             metoda: metodaPlata
                         });
@@ -416,31 +433,7 @@ app.get('/api/driver-reviews/:id_sofer', (req, res) => {
             });
         });
     });
-// 5. Istoricul curselor pentru Sofer (SELECT cursa WHERE 'Ride Finished')
-    app.get('/api/driver-history/:id_sofer', (req, res) => {
-        const id = req.params.id_sofer;
-        const query = `
-            SELECT c.id_cursa as id,
-                   c.data_comanda as date,
-            c.ora_comanda as time,
-            cl.nume as passenger,
-            c.plecare as from_zone,
-            c.destinatie as to_zone,
-            c.distanta as distance,
-            c.pret_final as fare,
-            IFNULL(p.tips, 0) as tip
-            FROM cursa c
-                JOIN client cl
-            ON c.client_id_client = cl.id_client
-                LEFT JOIN plata p ON c.id_cursa = p.cursa_id_cursa
-            WHERE c.sofer_id_sofer = ? AND c.status = 'Ride Finished'
-            ORDER BY c.data_comanda DESC, c.ora_comanda DESC
-        `;
-        db.query(query, [id], (err, results) => {
-            if (err) return res.status(500).json({error: err.message});
-            res.json(results);
-        });
-    });
+
     //ruta sa poata si amaratul de sofer sa lase review
     app.post('/api/submit-driver-review', (req, res) => {
         const { sofer_id_sofer, client_id_client, rating, comentarii } = req.body;
@@ -556,6 +549,19 @@ app.post('/api/submit-review', (req, res) => {
         res.json({ success: true, message: "Recenzie adăugată cu succes!" });
     });
 });
+// Ruta pentru anularea cursei de către client
+app.put('/api/cancel-ride/:id_cursa', (req, res) => {
+    const { id_cursa } = req.params;
+    const query = "UPDATE cursa SET status = 'Canceled' WHERE id_cursa = ?";
+
+    db.query(query, [id_cursa], (err, result) => {
+        if (err) {
+            console.error("Eroare la anularea cursei:", err);
+            return res.status(500).json({ success: false, message: err.message });
+        }
+        res.json({ success: true, message: "Cursa a fost anulată cu succes!" });
+    });
+});
 // 1. Obține datele și statisticile clientului (PENTRU CONT)
 app.get('/api/client-stats/:id_client', (req, res) => {
     const id = req.params.id_client;
@@ -593,10 +599,9 @@ app.put('/api/update-profile', (req, res) => {
     });
 });
 
+// 1. RUTA PENTRU ISTORICUL CLIENTULUI (Trips)
 app.get('/api/curse/:id_client', (req, res) => {
     const id = req.params.id_client;
-
-    // Folosim JOIN pentru a aduce și detaliile șoferului și mașinii
     const query = `
         SELECT
             c.id_cursa as id,
@@ -605,18 +610,47 @@ app.get('/api/curse/:id_client', (req, res) => {
             c.plecare as 'from',
             c.destinatie as 'to',
             c.distanta as distance,
-            c.pret_final as price,
+            c.pret_final as old_price,              -- Pretul intreg
+            IFNULL(p.suma, c.pret_final) as price,  -- Pretul cu reducere platit de client
+            c.cod_discount,                         -- Codul folosit
             IFNULL(s.nume, 'Șofer Necunoscut') as driver,
             CONCAT(IFNULL(m.model, 'Auto'), ' - ', IFNULL(m.nr_inmatriculare, 'Fără număr')) as car
         FROM cursa c
             LEFT JOIN sofer s ON c.sofer_id_sofer = s.id_sofer
             LEFT JOIN masina m ON s.id_sofer = m.sofer_id_sofer
+            LEFT JOIN plata p ON c.id_cursa = p.cursa_id_cursa
         WHERE c.client_id_client = ? AND c.status = 'Ride Finished'
         ORDER BY c.data_comanda DESC, c.ora_destinatie DESC
     `;
-
     db.query(query, [id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// 2. RUTA PENTRU ISTORICUL ȘOFERULUI (History)
+app.get('/api/driver-history/:id_sofer', (req, res) => {
+    const id = req.params.id_sofer;
+    const query = `
+        SELECT c.id_cursa as id,
+               c.data_comanda as date,
+               c.ora_comanda as time,
+               cl.nume as passenger,
+               c.plecare as from_zone,
+               c.destinatie as to_zone,
+               c.distanta as distance,
+               c.pret_final as fare,                  -- Soferul ia pretul intreg
+               IFNULL(p.suma, c.pret_final) as client_paid, -- Cat a platit clientul fizic
+               c.cod_discount,
+               IFNULL(p.tips, 0) as tip
+        FROM cursa c
+        JOIN client cl ON c.client_id_client = cl.id_client
+        LEFT JOIN plata p ON c.id_cursa = p.cursa_id_cursa
+        WHERE c.sofer_id_sofer = ? AND c.status = 'Ride Finished'
+        ORDER BY c.data_comanda DESC, c.ora_comanda DESC
+    `;
+    db.query(query, [id], (err, results) => {
+        if (err) return res.status(500).json({error: err.message});
         res.json(results);
     });
 });
@@ -1039,5 +1073,30 @@ app.delete('/api/admin/reviews/:id', (req, res) => {
     db.query(query, [req.params.id], (err, result) => {
         if (err) return res.status(500).json({ success: false, message: err.message });
         res.json({ success: true, message: "Recenzia a fost ștearsă!" });
+    });
+});
+// Ruta pentru aplicarea unui discount pe cursa curentă
+app.post('/api/apply-discount', (req, res) => {
+    const { id_cursa, cod_discount } = req.body;
+
+    // Căutăm dacă discountul există și nu este expirat
+    const checkQuery = "SELECT * FROM discount WHERE cod_discount = ? AND data_expirare >= NOW()";
+
+    db.query(checkQuery, [cod_discount], (err, results) => {
+        if (err) return res.status(500).json({ success: false, message: err.message });
+
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: "Cod invalid sau expirat!" });
+        }
+
+        const discount = results[0];
+
+        // Asociem codul cu cursa activă
+        const updateQuery = "UPDATE cursa SET cod_discount = ? WHERE id_cursa = ?";
+        db.query(updateQuery, [cod_discount, id_cursa], (errUpdate) => {
+            if (errUpdate) return res.status(500).json({ success: false, message: errUpdate.message });
+
+            res.json({ success: true, message: "Discount aplicat cu succes!", discount });
+        });
     });
 });

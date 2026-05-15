@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { MapPin, Navigation, Calendar, Clock, X, Check, Heart, Star } from 'lucide-react';
+import { MapPin, Navigation, Calendar, Clock, X, Check, Heart, Star, Tag } from 'lucide-react';
 import { GoogleMap, useJsApiLoader, Autocomplete, DirectionsRenderer } from '@react-google-maps/api';
 
 const center = { lat: 44.4268, lng: 26.1025 };
@@ -28,16 +28,15 @@ export default function ClientNewRide() {
   const [destination, setDestination] = useState('');
   const [selectedCar, setSelectedCar] = useState('standard');
 
-  const [isScheduled, setIsScheduled] = useState(false);
-  const [showScheduleModal, setShowScheduleModal] = useState(false);
-  const [scheduledDateTime, setScheduledDateTime] = useState('');
-
-  // STATE-URI PENTRU CURSA ACTIVĂ, TIPS ȘI REVIEWS
   const [activeRide, setActiveRide] = useState<any | null>(null);
   const [tipAmount, setTipAmount] = useState<number>(0);
   const [reviewRating, setReviewRating] = useState<number>(0);
   const [reviewComment, setReviewComment] = useState('');
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+  // STATE-URI PENTRU DISCOUNT
+  const [discountCodeInput, setDiscountCodeInput] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState<any | null>(null);
 
   const pickupRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -49,7 +48,6 @@ export default function ClientNewRide() {
     { id: 'xl', name: 'XL', rate: 4.50, icon: '🚐' },
   ];
 
-  // VERIFICAREA PERIODICĂ A CURSEI ACTIVE
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
     const clientId = savedUser.id_client || savedUser.id;
@@ -91,21 +89,61 @@ export default function ClientNewRide() {
     }
   };
 
-  // LOGICA PENTRU TRIMITERE RECENZIE
+  // LOGICA APLICARE DISCOUNT
+  const handleApplyDiscount = async () => {
+    if (!discountCodeInput || !activeRide) return;
+
+    try {
+      const response = await fetch('http://localhost:5050/api/apply-discount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_cursa: activeRide.id_cursa, cod_discount: discountCodeInput.toUpperCase() })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setAppliedDiscount(data.discount);
+        setDiscountCodeInput('');
+      } else {
+        alert(data.message); // Ex: "Cod invalid sau expirat!"
+      }
+    } catch (err) {
+      console.error("Eroare:", err);
+    }
+  };
+
+  const handleCancelRide = async () => {
+    if (!activeRide || !activeRide.id_cursa) return;
+
+    try {
+      const response = await fetch(`http://localhost:5050/api/cancel-ride/${activeRide.id_cursa}`, { method: 'PUT' });
+      const data = await response.json();
+      if (data.success) {
+        alert("Cursa a fost anulată.");
+        setActiveRide(null);
+        setDirectionsResponse(null);
+        setPickup('');
+        setDestination('');
+      } else {
+        alert("Eroare la anulare: " + data.message);
+      }
+    } catch (error) {
+      console.error("Eroare la anulare:", error);
+    }
+  };
+
   const handleSubmitReview = async () => {
     if (reviewRating === 0) return alert("Te rugăm să selectezi cel puțin o stea!");
     if (!activeRide || !activeRide.sofer_id_sofer) return;
 
     try {
       const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
-      const clientId = savedUser.id_client || savedUser.id;
-
       const response = await fetch('http://localhost:5050/api/submit-review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sofer_id_sofer: activeRide.sofer_id_sofer,
-          client_id_client: clientId,
+          client_id_client: savedUser.id_client || savedUser.id,
           rating: reviewRating,
           comentarii: reviewComment
         })
@@ -167,50 +205,42 @@ export default function ClientNewRide() {
 
   const handleRequestRide = async () => {
     if (!directionsResponse || !pickup || !destination) {
-      alert('Te rog completează ambele adrese din sugestiile Google!');
-      return;
+      return alert('Te rog completează ambele adrese!');
     }
 
     try {
       const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
-      const clientId = savedUser.id_client || savedUser.id;
-
-      if (!clientId) return alert("Eroare: Nu ești logat ca și client.");
-
       const distNum = parseFloat(distance.replace(/[^\d.]/g, ''));
       const durNum = parseFloat(duration.replace(/[^\d.]/g, ''));
       const car = carTypes.find(c => c.id === selectedCar);
       const finalPrice = car ? (distNum * car.rate) : (distNum * 2.90);
 
-      const payload = {
-        client_id_client: clientId,
-        plecare: pickup,
-        destinatie: destination,
-        distanta: distNum,
-        durata_estimata: durNum,
-        pret_estimat: finalPrice,
-        categorie: car ? car.name : 'Standard'
-      };
-
       const response = await fetch('http://localhost:5050/api/create-ride', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          client_id_client: savedUser.id_client || savedUser.id,
+          plecare: pickup,
+          destinatie: destination,
+          distanta: distNum,
+          durata_estimata: durNum,
+          pret_estimat: finalPrice,
+          categorie: car ? car.name : 'Standard'
+        }),
       });
 
       const data = await response.json();
-
       if (data.success) {
-        checkActiveRide(clientId);
-        // Resetăm formularul de review pentru curse viitoare
+        checkActiveRide(savedUser.id_client || savedUser.id);
         setReviewSubmitted(false);
         setReviewRating(0);
         setReviewComment('');
+        setAppliedDiscount(null); // Resetăm codul pt cursa viitoare
       } else {
         alert("Eroare la plasarea comenzii: " + data.message);
       }
     } catch (err) {
-      alert("Nu s-a putut trimite comanda. Verifică conexiunea cu serverul!");
+      alert("Eroare server.");
     }
   };
 
@@ -229,7 +259,7 @@ export default function ClientNewRide() {
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                   <h2 className="text-xl font-bold">
-                    {activeRide.status === 'Asteptare Sofer' ? 'Căutăm șofer...' : 'Șoferul este pe traseu'}
+                    {activeRide.status === 'Waiting Driver' ? 'Căutăm șofer...' : 'Șoferul este pe traseu'}
                   </h2>
                 </div>
 
@@ -250,6 +280,15 @@ export default function ClientNewRide() {
                   </div>
                 </div>
 
+                {activeRide.status === 'Waiting Driver' && (
+                    <button
+                        onClick={handleCancelRide}
+                        className="w-full mt-2 py-3 bg-red-100 text-red-600 font-bold rounded-xl hover:bg-red-200 transition-colors"
+                    >
+                      Anulează Cursa
+                    </button>
+                )}
+
                 {activeRide.driverName && (
                     <div className="mt-6 pt-6 border-t border-border/50">
                       <p className="text-xs uppercase text-muted-foreground font-bold mb-2">Detalii Șofer</p>
@@ -259,7 +298,7 @@ export default function ClientNewRide() {
                 )}
               </div>
 
-              {/* 2. ZONA DE REVIEW (Apare doar dacă șoferul a preluat cursa) */}
+              {/* 2. ZONA DE REVIEW */}
               {activeRide.driverName && !reviewSubmitted && (
                   <div className="bg-card p-6 rounded-2xl border border-border shadow-sm mb-8">
                     <div className="flex items-center gap-2 mb-4 text-primary">
@@ -292,37 +331,68 @@ export default function ClientNewRide() {
                   </div>
               )}
 
-              {/* MESAJ SUCCESS REVIEW */}
-              {activeRide.driverName && reviewSubmitted && (
-                  <div className="bg-green-50 p-4 rounded-2xl border border-green-200 mb-8 flex items-center justify-center gap-2 text-green-800 shadow-sm">
-                    <Check size={20} />
-                    <p className="font-bold">Recenzia a fost trimisă. Mulțumim!</p>
+              {/* 3. ZONA DE BACSIS */}
+              {activeRide.status !== 'Waiting Driver' && (
+                  <div className="bg-card p-6 rounded-2xl border border-border shadow-sm mb-8">
+                    <div className="flex items-center gap-2 mb-4 text-primary">
+                      <Heart size={20} />
+                      <h3 className="font-bold text-lg">Adaugă Bacșiș (Tips)</h3>
+                    </div>
+                    <div className="flex gap-2">
+                      {[0, 5, 10, 15, 20].map(amount => (
+                          <button
+                              key={amount}
+                              onClick={() => handleUpdateTip(amount)}
+                              className={`flex-1 py-3 rounded-xl border-2 font-bold transition-all ${
+                                  tipAmount === amount
+                                      ? 'bg-primary/10 text-primary border-primary shadow-sm'
+                                      : 'bg-card border-border hover:bg-muted text-muted-foreground'
+                              }`}
+                          >
+                            {amount > 0 ? `+${amount}` : '0'} Lei
+                          </button>
+                      ))}
+                    </div>
                   </div>
               )}
 
-              {/* 3. ZONA DE BACSIS (TIPS) */}
-              <div className="mt-auto bg-card p-6 rounded-2xl border border-border shadow-sm">
-                <div className="flex items-center gap-2 mb-4 text-primary">
-                  <Heart size={20} />
-                  <h3 className="font-bold text-lg">Adaugă Bacșiș (Tips)</h3>
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">Poți ajusta valoarea bacșișului pe durata cursei.</p>
-                <div className="flex gap-2">
-                  {[0, 5, 10, 15, 20].map(amount => (
-                      <button
-                          key={amount}
-                          onClick={() => handleUpdateTip(amount)}
-                          className={`flex-1 py-3 rounded-xl border-2 font-bold transition-all ${
-                              tipAmount === amount
-                                  ? 'bg-primary/10 text-primary border-primary shadow-sm'
-                                  : 'bg-card border-border hover:bg-muted text-muted-foreground'
-                          }`}
-                      >
-                        {amount > 0 ? `+${amount}` : '0'} Lei
-                      </button>
-                  ))}
-                </div>
-              </div>
+              {/* 4. ZONA DE DISCOUNT (Apare când șoferul a preluat cursa) */}
+              {activeRide.status !== 'Waiting Driver' && (
+                  <div className="bg-card p-6 rounded-2xl border border-border shadow-sm mb-8">
+                    <div className="flex items-center gap-2 mb-4 text-primary">
+                      <Tag size={20} />
+                      <h3 className="font-bold text-lg">Ai un cod de reducere?</h3>
+                    </div>
+
+                    {!appliedDiscount ? (
+                        <div className="flex gap-2">
+                          <input
+                              type="text"
+                              value={discountCodeInput}
+                              onChange={(e) => setDiscountCodeInput(e.target.value.toUpperCase())}
+                              placeholder="ex: REDUCERE20"
+                              className="flex-1 bg-muted p-3 rounded-lg border border-border outline-none focus:border-primary font-bold tracking-widest"
+                          />
+                          <button
+                              onClick={handleApplyDiscount}
+                              className="px-6 bg-primary text-primary-foreground font-bold rounded-lg hover:opacity-90 transition-all"
+                          >
+                            Aplică
+                          </button>
+                        </div>
+                    ) : (
+                        <div className="bg-green-50 p-4 rounded-xl border border-green-200 text-green-800 flex justify-between items-center shadow-inner">
+                          <div>
+                            <p className="font-bold text-lg">Cod aplicat: {appliedDiscount.cod_discount}</p>
+                            <p className="text-sm font-medium">
+                              Vei primi o reducere de <span className="font-bold">{appliedDiscount.valoare}{appliedDiscount.tip_valoare === 'procent' ? '%' : ' LEI'}</span> la final!
+                            </p>
+                          </div>
+                          <Check size={28} className="text-green-600" />
+                        </div>
+                    )}
+                  </div>
+              )}
 
             </div>
         ) : (
@@ -387,7 +457,6 @@ export default function ClientNewRide() {
             </div>
         )}
 
-        {/* HARTA GOOGLE */}
         <div className="flex-1 relative min-h-[400px]">
           <GoogleMap
               center={center}

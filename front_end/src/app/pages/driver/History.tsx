@@ -35,14 +35,12 @@ export default function DriverHistory() {
     }
   };
 
-  // --- CALCULE DINAMICE BAZATE PE BAZA DE DATE ---
   const totalEarnings = trips.reduce((sum, trip) => sum + (Number(trip.fare) || 0) + (Number(trip.tip) || 0), 0);
   const totalTips = trips.reduce((sum, trip) => sum + (Number(trip.tip) || 0), 0);
   const totalTrips = trips.length;
   const avgEarningsPerTrip = totalTrips > 0 ? totalEarnings / totalTrips : 0;
   const totalDistance = trips.reduce((sum, trip) => sum + (Number(trip.distance) || 0), 0);
 
-  // --- GENERARE GRAFIC (Grupat pe zilele săptămânii) ---
   const generateChartData = () => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const chartData = [
@@ -72,12 +70,10 @@ export default function DriverHistory() {
 
   return (
       <div className="p-8 max-w-6xl mx-auto pb-24">
-        {/* AM ELIMINAT BUTONUL ȘI STAREA DE FILTRE CONFORM CERINȚEI */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Trip History</h1>
         </div>
 
-        {/* CARDURI DE STATISTICI */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
           <div className="bg-card rounded-lg p-6 border border-border shadow-sm">
             <div className="flex items-center gap-2 mb-2 text-muted-foreground">
@@ -125,7 +121,6 @@ export default function DriverHistory() {
           </div>
         </div>
 
-        {/* GRAFIC SĂPTĂMÂNAL (Calculat dinamic) */}
         <div className="bg-card rounded-lg p-8 border border-border mb-8 shadow-sm">
           <h3 className="mb-6 text-xl font-bold">Weekly Earnings</h3>
           <ResponsiveContainer width="100%" height={250}>
@@ -149,7 +144,6 @@ export default function DriverHistory() {
           </ResponsiveContainer>
         </div>
 
-        {/* LISTA CURSELOR DINAMICĂ */}
         <div className="bg-card rounded-lg p-8 border border-border shadow-sm">
           <h3 className="mb-6 text-xl font-bold">Trip Details</h3>
 
@@ -175,9 +169,22 @@ export default function DriverHistory() {
                               </div>
                             </div>
                           </div>
-                          <div className="text-right">
+
+                          {/* AICI SOFERUL ISI VEDE SUMA TOTALA SI CE A PLATIT CLIENTUL PENTRU INFORMARE */}
+                          <div className="text-right flex flex-col items-end">
                             <div className="text-2xl font-light text-primary">{totalAmount.toFixed(2)} lei</div>
-                            <span className="text-xs font-bold uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full">Completed</span>
+                            {trip.cod_discount ? (
+                                <div className="mt-1 flex flex-col items-end gap-1">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-green-700 bg-green-100 border border-green-200 px-2 py-0.5 rounded-md">
+                                      Client a folosit cod: {trip.cod_discount}
+                                    </span>
+                                  <span className="text-xs text-muted-foreground">
+                                      Clientul a plătit: <span className="line-through decoration-red-500">{Number(trip.fare).toFixed(2)}</span> {Number(trip.client_paid).toFixed(2)} lei
+                                    </span>
+                                </div>
+                            ) : (
+                                <span className="text-xs font-bold uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full mt-2">Completed</span>
+                            )}
                           </div>
                         </div>
 
