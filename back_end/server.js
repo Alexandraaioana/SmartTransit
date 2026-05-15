@@ -825,17 +825,9 @@ app.post('/api/admin/assign-discount', (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 5050;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Serverul rulează pe portul ${PORT}`);
 });
-
-const cors = require('cors');
-app.use(cors({
-  origin: ['http://localhost:5173', 'https://untitled-pi-seven.vercel.app/'], // Adaugă aici link-ul de la Vercel când îl ai
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
 
 // ruta de creeare cursa client
 

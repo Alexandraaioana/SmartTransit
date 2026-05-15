@@ -22,9 +22,9 @@ print("Conectare la baza de date din Cloud...")
 try:
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()
-    print("✅ Conectat cu succes!")
+    print("Conectat cu succes!")
 except Exception as e:
-    print(f"❌ Eroare de conectare: {e}")
+    print(f"Eroare de conectare: {e}")
     exit()
 
 # ==========================================
@@ -35,7 +35,7 @@ for _ in range(15): # Generăm 15 clienți
     nume = fake.name()
     nr_tel = f"07{random.randint(10000000, 99999999)}" # Generează fix 10 cifre    mail = fake.email()
     parola = "parola123"
-    mail = fake.email() 
+    mail = nume.email() 
     adresa = fake.address().replace('\n', ', ')
     km = random.randint(0, 500)
     activ = random.choice([0, 1, 1, 1]) # Mai multe șanse să fie activ (1)
