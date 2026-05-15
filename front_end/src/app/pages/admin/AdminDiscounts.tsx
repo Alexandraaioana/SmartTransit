@@ -6,7 +6,7 @@ export default function AdminDiscounts() {
 
   const fetchDiscounts = async () => {
     try {
-      const res = await fetch('https://untitled-i7lc.onrender.com');
+      const res = await fetch('http://localhost:5050/api/admin/discounts');
       const data = await res.json();
       if (Array.isArray(data)) setDiscounts(data);
     } catch (err) {
@@ -19,7 +19,7 @@ export default function AdminDiscounts() {
   // Creare discount nou
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('https://untitled-i7lc.onrender.com', {
+    await fetch('http://localhost:5050/api/admin/discounts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -34,7 +34,7 @@ export default function AdminDiscounts() {
     if (!id_client) return;
 
     try {
-      const res = await fetch('https://untitled-i7lc.onrender.com', {
+      const res = await fetch('http://localhost:5050/api/admin/assign-discount', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ client_id_client: parseInt(id_client), discount_id_discount: id_discount })
