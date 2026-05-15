@@ -9,11 +9,11 @@ export default function AdminCars() {
 
   const fetchData = async () => {
     try {
-      const resCars = await fetch('http://localhost:5050/api/admin/cars');
+      const resCars = await fetch('https://untitled-i7lc.onrender.com');
       const dataCars = await resCars.json();
       if (Array.isArray(dataCars)) setCars(dataCars);
 
-      const resDrivers = await fetch('http://localhost:5050/api/admin/drivers-without-cars');
+      const resDrivers = await fetch('https://untitled-i7lc.onrender.com');
       const dataDrivers = await resDrivers.json();
       if (Array.isArray(dataDrivers)) setFreeDrivers(dataDrivers);
     } catch (err) {
@@ -27,7 +27,7 @@ export default function AdminCars() {
     e.preventDefault();
     if (!formData.sofer_id_sofer) return alert("Trebuie să selectezi un șofer liber!");
 
-    await fetch('http://localhost:5050/api/admin/cars', {
+    await fetch('https://untitled-i7lc.onrender.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -38,7 +38,7 @@ export default function AdminCars() {
 
   const handleDelete = async (sofer_id: number) => {
     if(!confirm("Ștergi această mașină? Șoferul va rămâne fără vehicul.")) return;
-    await fetch(`http://localhost:5050/api/admin/cars/${sofer_id}`, { method: 'DELETE' });
+    await fetch(`https://untitled-i7lc.onrender.com`, { method: 'DELETE' });
     fetchData();
   };
 

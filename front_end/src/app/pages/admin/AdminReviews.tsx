@@ -6,7 +6,7 @@ export default function AdminReviews() {
 
   const fetchReviews = async () => {
     try {
-      const res = await fetch('http://localhost:5050/api/admin/reviews');
+      const res = await fetch('https://untitled-i7lc.onrender.com');
       const data = await res.json();
       if (Array.isArray(data)) setReviews(data);
     } catch (err) {
@@ -20,7 +20,7 @@ export default function AdminReviews() {
     if (!confirm("Ești sigur că vrei să ștergi definitiv această recenzie?")) return;
     
     try {
-      await fetch(`http://localhost:5050/api/admin/reviews/${id}`, { method: 'DELETE' });
+      await fetch(`https://untitled-i7lc.onrender.com`, { method: 'DELETE' });
       fetchReviews(); // Reîncărcăm lista după ștergere
     } catch (err) {
       console.error(err);

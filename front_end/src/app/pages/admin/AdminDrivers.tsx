@@ -7,7 +7,7 @@ export default function AdminDrivers() {
 
   const fetchDrivers = async () => {
     try {
-      const res = await fetch('http://localhost:5050/api/admin/drivers');
+      const res = await fetch('https://untitled-i7lc.onrender.com');
       const data = await res.json();
       if (Array.isArray(data)) setDrivers(data);
     } catch (err) {
@@ -20,8 +20,8 @@ export default function AdminDrivers() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = isEditing 
-        ? `http://localhost:5050/api/admin/drivers/${formData.id_sofer}` 
-        : 'http://localhost:5050/api/admin/drivers';
+        ? `https://untitled-i7lc.onrender.com` 
+        : 'https://untitled-i7lc.onrender.com';
     const method = isEditing ? 'PUT' : 'POST';
 
     await fetch(url, {
@@ -36,14 +36,14 @@ export default function AdminDrivers() {
 
   const handleDelete = async (id: number) => {
     if(!confirm("Dezactivezi acest șofer?")) return;
-    await fetch(`http://localhost:5050/api/admin/drivers/${id}`, { method: 'DELETE' });
+    await fetch(`https://untitled-i7lc.onrender.com`, { method: 'DELETE' });
     fetchDrivers();
   };
 
   // NOU: Funcția de reactivare
   const handleActivate = async (id: number) => {
     if(!confirm("Re-activezi acest șofer?")) return;
-    await fetch(`http://localhost:5050/api/admin/drivers/${id}/activate`, { method: 'PUT' });
+    await fetch(`https://untitled-i7lc.onrender.com`, { method: 'PUT' });
     fetchDrivers();
   };
 

@@ -11,7 +11,7 @@ export default function AdminLogin() {
     setEroare('');
 
     try {
-      const res = await fetch('http://localhost:5050/api/admin/login', {
+      const res = await fetch('https://untitled-i7lc.onrender.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ parola })

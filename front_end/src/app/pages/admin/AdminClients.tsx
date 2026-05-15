@@ -20,7 +20,7 @@ export default function AdminClients() {
         sort: sortBy
       }).toString();
 
-      const res = await fetch(`http://localhost:5050/api/admin/clients?${queryParams}`);
+      const res = await fetch(`https://untitled-i7lc.onrender.com`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setClients(data);
@@ -38,8 +38,8 @@ export default function AdminClients() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = isEditing 
-        ? `http://localhost:5050/api/admin/clients/${formData.id_client}` 
-        : 'http://localhost:5050/api/admin/clients';
+        ? `https://untitled-i7lc.onrender.com` 
+        : 'https://untitled-i7lc.onrender.com';
     
     const method = isEditing ? 'PUT' : 'POST';
 
@@ -59,13 +59,13 @@ export default function AdminClients() {
 
   const handleDelete = async (id: number) => {
     if(!confirm("Ești sigur că vrei să dezactivezi acest client?")) return;
-    await fetch(`http://localhost:5050/api/admin/clients/${id}`, { method: 'DELETE' });
+    await fetch(`https://untitled-i7lc.onrender.com`, { method: 'DELETE' });
     fetchClients();
   };
 
   const handleActivate = async (id: number) => {
     if(!confirm("Re-activezi acest client?")) return;
-    await fetch(`http://localhost:5050/api/admin/clients/${id}/activate`, { method: 'PUT' });
+    await fetch(`https://untitled-i7lc.onrender.com`, { method: 'PUT' });
     fetchClients();
   };
 

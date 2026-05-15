@@ -12,7 +12,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('http://localhost:5050/api/admin/dashboard-stats');
+        const res = await fetch('https://untitled-i7lc.onrender.com');
         const data = await res.json();
         setStats(data);
       } catch (err) {
