@@ -98,7 +98,7 @@ conn.commit()
 # 5. GENERARE CURSE 
 print("Generare Istoric Curse, Plăți și Recenzii...")
 statusuri_curse = ['Finalizat', 'Finalizat', 'Finalizat', 'In curs', 'Anulat']
-metode_plata = ['Card', 'Cash', 'Apple Pay']
+metode_plata = ['Card', 'Cash']
 
 for _ in range(30): # Generăm 30 de curse
     client_id = random.choice(clienti_ids)
