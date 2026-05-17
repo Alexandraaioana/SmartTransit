@@ -3,12 +3,8 @@ from faker import Faker
 import random
 from datetime import datetime, timedelta
 
-# Inițializăm Faker pentru limba română
 fake = Faker('ro_RO')
 
-# ==========================================
-# 1. CONFIGURARE CONEXIUNE AIVEN
-# ==========================================
 db_config = {
     'host': 'taxidb-bordeialexandraioana-taxiservice.j.aivencloud.com', 
     'user': 'avnadmin',
@@ -27,18 +23,25 @@ except Exception as e:
     print(f"Eroare de conectare: {e}")
     exit()
 
-# ==========================================
-# 2. GENERARE CLIENȚI ȘI ȘOFERI
-# ==========================================
+import random
+
+titluri_inutile = ['dr.', 'dna.', 'dl.', 'ing.', 'prof.', 'conf.']
+
 print("Generare Clienți...")
-for _ in range(15): # Generăm 15 clienți
+for _ in range(15): 
     nume = fake.name()
-    nr_tel = f"07{random.randint(10000000, 99999999)}" # Generează fix 10 cifre    mail = fake.email()
+    nr_tel = f"07{random.randint(10000000, 99999999)}" 
     parola = "parola123"
-    mail = nume.email() 
     adresa = fake.address().replace('\n', ', ')
     km = random.randint(0, 500)
-    activ = random.choice([0, 1, 1, 1]) # Mai multe șanse să fie activ (1)
+    activ = random.choice([0, 1, 1, 1]) 
+
+    parti_nume = [p for p in nume.strip().lower().split() if p not in titluri_inutile]
+    
+    if len(parti_nume) >= 2:
+        mail = f"{parti_nume[0][0]}{parti_nume[-1]}@gmail.ro"
+    else:
+        mail = f"{parti_nume[0]}@gmail.ro"
 
     cursor.execute(
         "INSERT INTO client (nume, nr_tel, mail, parola, km_parcursi, adresa, activ) VALUES (%s, %s, %s, %s, %s, %s, %s)",
@@ -46,12 +49,19 @@ for _ in range(15): # Generăm 15 clienți
     )
 
 print("Generare Șoferi...")
-for _ in range(10): # Generăm 10 șoferi
+for _ in range(15): 
     nume = fake.name()
-    nr_tel = f"07{random.randint(10000000, 99999999)}" # Păstrăm variabila așa
-    mail = fake.email()
+    nr_tel = f"07{random.randint(10000000, 99999999)}" 
     parola = "sofer123"
     activ = random.choice([0, 1, 1])
+    
+    parti_nume = [p for p in nume.strip().lower().split() if p not in titluri_inutile]
+    
+    if len(parti_nume) >= 2:
+        mail = f"{parti_nume[0][0]}{parti_nume[-1]}@gmail.ro"
+    else:
+        mail = f"{parti_nume[0]}@gmail.ro"
+    # --------------------------------
     
     cursor.execute(
         "INSERT INTO sofer (nume, telefon, mail, parola, activ) VALUES (%s, %s, %s, %s, %s)",
@@ -60,18 +70,12 @@ for _ in range(10): # Generăm 10 șoferi
 
 conn.commit()
 
-# ==========================================
-# 3. EXTRAGERE ID-URI GENERATE PENTRU RELAȚII
-# ==========================================
 cursor.execute("SELECT id_client FROM client")
 clienti_ids = [row[0] for row in cursor.fetchall()]
 
 cursor.execute("SELECT id_sofer FROM sofer")
 soferi_ids = [row[0] for row in cursor.fetchall()]
 
-# ==========================================
-# 4. GENERARE FLOTĂ AUTO (Doar pentru primii 7 șoferi)
-# ==========================================
 print("Generare Flotă Auto...")
 modele_masini = ['Dacia Logan', 'Renault Clio', 'Skoda Octavia', 'Toyota Corolla', 'VW Passat']
 categorii = ['Standard', 'Premium', 'Electric']
@@ -91,9 +95,7 @@ for sofer_id in soferi_ids[:7]: # Luăm primii 7 șoferi să lăsăm 3 liberi
     )
 
 conn.commit()
-# ==========================================
-# 5. GENERARE CURSE (Istoric)
-# ==========================================
+# 5. GENERARE CURSE 
 print("Generare Istoric Curse, Plăți și Recenzii...")
 statusuri_curse = ['Finalizat', 'Finalizat', 'Finalizat', 'In curs', 'Anulat']
 metode_plata = ['Card', 'Cash', 'Apple Pay']
@@ -117,10 +119,8 @@ for _ in range(30): # Generăm 30 de curse
         (client_id, sofer_id, plecare, destinatie, data_comanda, pret, status)
     )
     
-    # SALVĂM ID-UL CURSEI (Aici crăpa!)
     cursa_id = cursor.lastrowid 
 
-    # Dacă e finalizată, generăm o Plată și o Recenzie
     if status == 'Finalizat':
         # PLATA
         metoda = random.choice(metode_plata)
@@ -141,12 +141,9 @@ for _ in range(30): # Generăm 30 de curse
 conn.commit()
 
 
-# ==========================================
-# 6. GENERARE RECENZII DEDICATE
-# ==========================================
+
 print("Generare Recenzii suplimentare...")
 
-# Listă de feedback-uri realiste în română pentru a ajuta Faker
 feedback_pozitiv = [
     "Șofer foarte politicos, mașina curată.",
     "A ajuns foarte repede la destinație.",
@@ -183,10 +180,9 @@ for _ in range(20): # Generăm 20 de recenzii noi
     )
 
 conn.commit()
-print("✅ Recenziile au fost adăugate!")
+print("Recenziile au fost adăugate!")
 
-# Închidem conexiunea
 cursor.close()
 conn.close()
 
-print("🎉 Baza de date a fost populată cu succes! Poți verifica panoul de Admin.")
+print("Baza de date a fost populată cu succes! Poți verifica panoul de admin.")

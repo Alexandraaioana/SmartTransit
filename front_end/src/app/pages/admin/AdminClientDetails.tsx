@@ -75,7 +75,7 @@ export default function AdminClientDetails() {
             <h3 className="text-lg font-bold mb-4 border-b border-blue-500 pb-2">Sumar Activitate</h3>
             <div className="grid grid-cols-2 gap-4">
               <div><p className="text-blue-200 text-sm">Curse Totale</p><p className="text-3xl font-light">{stats.total_curse || 0}</p></div>
-              <div><p className="text-blue-200 text-sm">Bani Cheltuiți</p><p className="text-3xl font-light">{stats.bani_cheltuiti || 0} lei</p></div>
+              <div><p className="text-blue-200 text-sm">Bani Cheltuiți</p><p className="text-3xl font-light">{Number(stats.bani_cheltuiti).toFixed(2)} lei</p></div>
               <div className="col-span-2"><p className="text-blue-200 text-sm">Kilometri Parcurși</p><p className="text-3xl font-light">{client.km_parcursi || 0} km</p></div>
             </div>
           </div>

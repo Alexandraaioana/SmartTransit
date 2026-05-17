@@ -709,18 +709,148 @@ app.delete('/api/admin/clients/:id', (req, res) => {
 
 
 // ==========================================
-// RUTE ADMIN - GESTIONARE ȘOFERI (CRUD)
+// RUTE ADMIN - GESTIONARE ȘOFERI
 // ==========================================
 
 // 1. VIZUALIZARE (Read)
+// GET toți șoferii (Căutare, Filtrare, Sortare - VARIANTĂ SECURIZATĂ)
 app.get('/api/admin/drivers', (req, res) => {
-    const query = 'SELECT id_sofer, nume, telefon, mail, parola, status, cnp, CAST(activ AS UNSIGNED) as activ FROM sofer ORDER BY id_sofer DESC';
-    db.query(query, (err, results) => {
+    // Extragem parametrii trimiși de React
+    const searchParam = req.query.search;
+    const statusParam = req.query.status;
+    const sortParam = req.query.sort;
+    
+    let query = "SELECT * FROM sofer WHERE 1=1";
+    let params = [];
+
+    // 1. Căutare (ignoră literele mari/mici și spațiile goale)
+    if (searchParam && searchParam.trim() !== '') {
+        query += " AND (LOWER(nume) LIKE LOWER(?) OR LOWER(mail) LIKE LOWER(?))";
+        const textCautat = `%${searchParam.trim()}%`;
+        params.push(textCautat, textCautat);
+    }
+
+    // 2. Filtrare Activi/Inactivi (verificare strictă)
+    if (statusParam === '1' || statusParam === '0') {
+        query += " AND activ = ?";
+        params.push(parseInt(statusParam));
+    }
+
+    // 3. Sortare
+    if (sortParam === 'nume_asc') {
+        query += " ORDER BY nume ASC";
+    } else {
+        query += " ORDER BY id_sofer DESC"; 
+    }
+
+    // Executăm interogarea finală
+    db.query(query, params, (err, results) => {
         if (err) {
-            console.error("Eroare la citire șoferi:", err);
+            console.error("Eroare Bază de Date:", err.message);
             return res.status(500).json({ error: err.message });
         }
-        res.json(results);
+
+        const soferiCorectati = results.map(sofer => {
+            let statusActiv = sofer.activ;
+            
+            if (Buffer.isBuffer(statusActiv)) {
+                statusActiv = statusActiv[0]; 
+            } 
+            
+            return {
+                ...sofer,
+                activ: statusActiv 
+            };
+        });
+
+    
+        res.json(soferiCorectati);
+    });
+});
+
+
+// RUTA: DOSAR COMPLET ȘOFER (ADMIN)
+app.get('/api/admin/drivers/:id/details', (req, res) => {
+    const driverId = req.params.id;
+
+    const queryDriver = `SELECT * FROM sofer WHERE id_sofer = ?`;
+    
+    // Statistici: Câte curse a făcut și câți bani a generat
+    const queryStats = `
+        SELECT 
+            COUNT(id_cursa) AS total_curse, 
+            COALESCE(SUM(pret_final), 0) AS bani_generati 
+        FROM cursa 
+        WHERE sofer_id_sofer = ? AND LOWER(TRIM(status)) IN ('ride finished', 'finalizat')
+    `;
+
+    // Istoricul curselor
+    const queryCurse = `
+        SELECT id_cursa, plecare, destinatie, pret_final, status 
+        FROM cursa 
+        WHERE sofer_id_sofer = ? 
+        ORDER BY id_cursa DESC
+    `;
+
+    // Recenziile primite de la clienți
+    const queryRecenzii = `
+        SELECT id_recenzie, rating AS nota, comentarii AS comentariu 
+        FROM recenzie 
+        WHERE sofer_id_sofer = ? 
+        ORDER BY id_recenzie DESC
+    `;
+
+    // Presupunem că ai tabele 'masina' și 'certificat' legate de sofer_id_sofer
+    const queryMasina = `SELECT * FROM masina WHERE sofer_id_sofer = ? LIMIT 1`;
+    const queryCertificat = `SELECT * FROM certificat WHERE sofer_id_sofer = ? LIMIT 1`;
+
+    db.query(queryDriver, [driverId], (err1, driverRes) => {
+        if (err1) return res.status(500).json({ error: err1.message });
+        if (driverRes.length === 0) return res.status(404).json({ error: 'Șofer negăsit' });
+
+        // Reparăm buffer-ul pentru statusul activ, fix cum am învățat!
+        let sofer = driverRes[0];
+        if (Buffer.isBuffer(sofer.activ)) sofer.activ = sofer.activ[0];
+
+        db.query(queryStats, [driverId], (err2, statsRes) => {
+            db.query(queryCurse, [driverId], (err3, curseRes) => {
+                db.query(queryRecenzii, [driverId], (err4, recenziiRes) => {
+                    db.query(queryMasina, [driverId], (err5, masinaRes) => {
+                        db.query(queryCertificat, [driverId], (err6, certRes) => {
+                            
+                            // Trimitem totul la pachet
+                            res.json({
+                                driver: sofer,
+                                stats: statsRes?.[0] || { total_curse: 0, bani_generati: 0 },
+                                curse: curseRes || [],
+                                recenzii: err4 ? [] : recenziiRes, // Prevenim crash-ul dacă tabelul recenzii diferă
+                                masina: masinaRes?.[0] || null,
+                                certificat: certRes?.[0] || null
+                            });
+
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
+// DEZACTIVARE ȘOFER (Setează activ = 0)
+app.delete('/api/admin/drivers/:id', (req, res) => {
+    const id = req.params.id;
+    db.query("UPDATE sofer SET activ = 0 WHERE id_sofer = ?", [id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Șofer dezactivat cu succes" });
+    });
+});
+
+// REACTIVARE ȘOFER (Setează activ = 1)
+app.put('/api/admin/drivers/:id/activate', (req, res) => {
+    const id = req.params.id;
+    db.query("UPDATE sofer SET activ = 1 WHERE id_sofer = ?", [id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Șofer reactivat cu succes" });
     });
 });
 
@@ -1017,7 +1147,7 @@ app.get('/api/admin/clients/:id/details', (req, res) => {
             COUNT(id_cursa) AS total_curse, 
             COALESCE(SUM(pret_final), 0) AS bani_cheltuiti 
         FROM cursa 
-        WHERE client_id_client = ? AND status = 'Finalizat'
+        WHERE client_id_client = ? AND LOWER(TRIM(status)) IN ('ride finished', 'finalizat')
     `;
 
     // CORECTAT: Folosim 'plecare' și 'destinatie' conform SQL-ului tău

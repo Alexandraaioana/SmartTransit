@@ -21,7 +21,7 @@ export default function AdminLayout() {
     <div className="flex h-screen bg-gray-100">
       <aside className="w-64 bg-slate-900 text-white border-r">
         <div className="p-6">
-          <h1 className="text-xl font-bold mb-1">RideShare admin</h1>
+          <h1 className="text-xl font-bold mb-1">SmartTransit admin</h1>
           <p className="text-sm text-slate-400">Control panel</p>
         </div>
 

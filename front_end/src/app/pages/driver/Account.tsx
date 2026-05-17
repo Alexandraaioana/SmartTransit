@@ -288,7 +288,7 @@ export default function DriverAccount() {
               </p>
 
               <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1 font-medium">
-                <Award size={16} className="text-yellow-500" /> Verified RideShare Partner
+                <Award size={16} className="text-yellow-500" /> Verified SmartTransit Partner
               </p>
             </div>
           </div>
