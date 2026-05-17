@@ -259,51 +259,51 @@ INSERT INTO cursa (client_id_client, sofer_id_sofer, status, plecare, destinatie
                    data_comanda, ora_comanda, ora_start, ora_destinatie,
                    pret_estimat, pret_final, distanta, categorie, tips, cod_discount) VALUES
 -- Cursa 1
-(1,  1,  'Ride Finished', 'Piata Unirii, Bucuresti',         'Aeroportul Otopeni',          DATE_SUB(CURDATE(),INTERVAL 25 DAY), '08:10:00','08:12:00','08:57:00', 58.80, 61.00, 24.5, 'economy',  5.00, NULL),
+(1,  1,  'Finalizat', 'Piata Unirii, Bucuresti',         'Aeroportul Otopeni',          DATE_SUB(CURDATE(),INTERVAL 25 DAY), '08:10:00','08:12:00','08:57:00', 58.80, 61.00, 24.5, 'economy',  5.00, NULL),
 -- Cursa 2
-(2,  3,  'Ride Finished', 'Gara de Nord, Bucuresti',         'Piata Victoriei',             DATE_SUB(CURDATE(),INTERVAL 23 DAY), '09:30:00','09:32:00','09:48:00', 14.50, 13.00,  5.0, 'standard', 0.00, NULL),
+(2,  3,  'Finalizat', 'Gara de Nord, Bucuresti',         'Piata Victoriei',             DATE_SUB(CURDATE(),INTERVAL 23 DAY), '09:30:00','09:32:00','09:48:00', 14.50, 13.00,  5.0, 'standard', 0.00, NULL),
 -- Cursa 3
-(3,  6,  'Ride Finished', 'Str. Florilor 3, Cluj-Napoca',    'Aeroportul Cluj',             DATE_SUB(CURDATE(),INTERVAL 22 DAY), '06:00:00','06:02:00','06:28:00', 37.10, 39.00, 12.5, 'premium',  10.00,'WELCOME10'),
+(3,  6,  'Finalizat', 'Str. Florilor 3, Cluj-Napoca',    'Aeroportul Cluj',             DATE_SUB(CURDATE(),INTERVAL 22 DAY), '06:00:00','06:02:00','06:28:00', 37.10, 39.00, 12.5, 'premium',  10.00,'WELCOME10'),
 -- Cursa 4
-(4,  4,  'Ride Finished', 'Calea Victoriei 88, Bucuresti',   'Parcul Herastrau',            DATE_SUB(CURDATE(),INTERVAL 20 DAY), '14:15:00','14:17:00','14:35:00', 13.92, 15.00,  4.8, 'standard', 2.00, NULL),
+(4,  4,  'Finalizat', 'Calea Victoriei 88, Bucuresti',   'Parcul Herastrau',            DATE_SUB(CURDATE(),INTERVAL 20 DAY), '14:15:00','14:17:00','14:35:00', 13.92, 15.00,  4.8, 'standard', 2.00, NULL),
 -- Cursa 5
-(5,  2,  'Ride Finished', 'Bd. Revolutiei, Timisoara',       'Aeroportul Traian Vuia',      DATE_SUB(CURDATE(),INTERVAL 19 DAY), '11:00:00','11:01:00','11:22:00', 24.07, 26.00,  8.3, 'economy',  0.00, NULL),
+(5,  2,  'Finalizat', 'Bd. Revolutiei, Timisoara',       'Aeroportul Traian Vuia',      DATE_SUB(CURDATE(),INTERVAL 19 DAY), '11:00:00','11:01:00','11:22:00', 24.07, 26.00,  8.3, 'economy',  0.00, NULL),
 -- Cursa 6
-(6,  7,  'Ride Finished', 'Piata Palatului, Iasi',           'Gara Iasi',                   DATE_SUB(CURDATE(),INTERVAL 18 DAY), '16:40:00','16:42:00','16:55:00', 11.60, 10.00,  4.0, 'premium',  5.00, NULL),
+(6,  7,  'Finalizat', 'Piata Palatului, Iasi',           'Gara Iasi',                   DATE_SUB(CURDATE(),INTERVAL 18 DAY), '16:40:00','16:42:00','16:55:00', 11.60, 10.00,  4.0, 'premium',  5.00, NULL),
 -- Cursa 7
-(7,  9,  'Ride Finished', 'Bd. Magheru 45, Bucuresti',       'IKEA Pallady',                DATE_SUB(CURDATE(),INTERVAL 17 DAY), '13:00:00','13:03:00','13:38:00', 40.50, 38.00, 13.9, 'xl',       3.00, 'SUMMER20'),
+(7,  9,  'Finalizat', 'Bd. Magheru 45, Bucuresti',       'IKEA Pallady',                DATE_SUB(CURDATE(),INTERVAL 17 DAY), '13:00:00','13:03:00','13:38:00', 40.50, 38.00, 13.9, 'xl',       3.00, 'SUMMER20'),
 -- Cursa 8
-(8,  5,  'Ride Finished', 'Str. Republicii 15, Brasov',      'Poiana Brasov',               DATE_SUB(CURDATE(),INTERVAL 16 DAY), '10:20:00','10:22:00','10:45:00', 30.16, 32.00, 10.4, 'standard', 0.00, NULL),
+(8,  5,  'Finalizat', 'Str. Republicii 15, Brasov',      'Poiana Brasov',               DATE_SUB(CURDATE(),INTERVAL 16 DAY), '10:20:00','10:22:00','10:45:00', 30.16, 32.00, 10.4, 'standard', 0.00, NULL),
 -- Cursa 9
-(9,  8,  'Ride Finished', 'Str. Andrei Muresanu 9, Cluj',    'Centrul Vechi Cluj',          DATE_SUB(CURDATE(),INTERVAL 15 DAY), '19:30:00','19:31:00','19:44:00',  9.28,  8.00,  3.2, 'premium',  2.00, NULL),
+(9,  8,  'Finalizat', 'Str. Andrei Muresanu 9, Cluj',    'Centrul Vechi Cluj',          DATE_SUB(CURDATE(),INTERVAL 15 DAY), '19:30:00','19:31:00','19:44:00',  9.28,  8.00,  3.2, 'premium',  2.00, NULL),
 -- Cursa 10
-(10, 1,  'Ride Finished', 'Bd. Dacia 33, Bucuresti',         'Spitalul Floreasca',          DATE_SUB(CURDATE(),INTERVAL 14 DAY), '07:00:00','07:01:00','07:18:00', 15.66, 17.00,  5.4, 'economy',  0.00, NULL),
+(10, 1,  'Finalizat', 'Bd. Dacia 33, Bucuresti',         'Spitalul Floreasca',          DATE_SUB(CURDATE(),INTERVAL 14 DAY), '07:00:00','07:01:00','07:18:00', 15.66, 17.00,  5.4, 'economy',  0.00, NULL),
 -- Cursa 11
-(11, 10, 'Ride Finished', 'Str. Dorobanti 61, Bucuresti',    'Baneasa Shopping City',       DATE_SUB(CURDATE(),INTERVAL 13 DAY), '15:10:00','15:12:00','15:29:00', 23.49, 25.00,  8.1, 'xl',       5.00, 'VIP30'),
+(11, 10, 'Finalizat', 'Str. Dorobanti 61, Bucuresti',    'Baneasa Shopping City',       DATE_SUB(CURDATE(),INTERVAL 13 DAY), '15:10:00','15:12:00','15:29:00', 23.49, 25.00,  8.1, 'xl',       5.00, 'VIP30'),
 -- Cursa 12
-(12, 3,  'Ride Finished', 'Str. Libertatii 5, Craiova',      'Parcul Nicolae Romanescu',    DATE_SUB(CURDATE(),INTERVAL 12 DAY), '12:00:00','12:02:00','12:14:00', 13.34, 12.00,  4.6, 'standard', 0.00, NULL),
+(12, 3,  'Finalizat', 'Str. Libertatii 5, Craiova',      'Parcul Nicolae Romanescu',    DATE_SUB(CURDATE(),INTERVAL 12 DAY), '12:00:00','12:02:00','12:14:00', 13.34, 12.00,  4.6, 'standard', 0.00, NULL),
 -- Cursa 13
-(13, 6,  'Ride Finished', 'Str. Stefan cel Mare 18, Iasi',   'Parcul Copou',                DATE_SUB(CURDATE(),INTERVAL 11 DAY), '17:45:00','17:46:00','17:58:00', 11.02, 13.00,  3.8, 'premium',  0.00, NULL),
+(13, 6,  'Finalizat', 'Str. Stefan cel Mare 18, Iasi',   'Parcul Copou',                DATE_SUB(CURDATE(),INTERVAL 11 DAY), '17:45:00','17:46:00','17:58:00', 11.02, 13.00,  3.8, 'premium',  0.00, NULL),
 -- Cursa 14
-(1,  11, 'Ride Finished', 'Piata Unirii, Bucuresti',         'Mall Vitan',                  DATE_SUB(CURDATE(),INTERVAL 10 DAY), '11:30:00','11:32:00','11:55:00', 29.61, 28.00, 10.2, 'xl',       7.00, NULL),
+(1,  11, 'Finalizat', 'Piata Unirii, Bucuresti',         'Mall Vitan',                  DATE_SUB(CURDATE(),INTERVAL 10 DAY), '11:30:00','11:32:00','11:55:00', 29.61, 28.00, 10.2, 'xl',       7.00, NULL),
 -- Cursa 15
-(3,  4,  'Ride Finished', 'Aeroportul Cluj',                 'Str. Florilor 3, Cluj-Napoca',DATE_SUB(CURDATE(),INTERVAL 9  DAY), '20:10:00','20:12:00','20:38:00', 36.25, 34.00, 12.5, 'standard', 0.00, 'FIX15'),
+(3,  4,  'Finalizat', 'Aeroportul Cluj',                 'Str. Florilor 3, Cluj-Napoca',DATE_SUB(CURDATE(),INTERVAL 9  DAY), '20:10:00','20:12:00','20:38:00', 36.25, 34.00, 12.5, 'standard', 0.00, 'FIX15'),
 -- Cursa 16
-(5,  7,  'Ride Finished', 'Centrul Timisoara',               'Fabrica de Bere Timisoreana', DATE_SUB(CURDATE(),INTERVAL 8  DAY), '21:00:00','21:01:00','21:12:00', 11.89, 14.00,  4.1, 'premium',  5.00, NULL),
+(5,  7,  'Finalizat', 'Centrul Timisoara',               'Fabrica de Bere Timisoreana', DATE_SUB(CURDATE(),INTERVAL 8  DAY), '21:00:00','21:01:00','21:12:00', 11.89, 14.00,  4.1, 'premium',  5.00, NULL),
 -- Cursa 17
-(2,  2,  'Ride Finished', 'Piata Victoriei, Bucuresti',      'Scoala Centrala',             DATE_SUB(CURDATE(),INTERVAL 7  DAY), '07:45:00','07:46:00','07:59:00',  8.41,  9.00,  2.9, 'economy',  0.00, NULL),
+(2,  2,  'Finalizat', 'Piata Victoriei, Bucuresti',      'Scoala Centrala',             DATE_SUB(CURDATE(),INTERVAL 7  DAY), '07:45:00','07:46:00','07:59:00',  8.41,  9.00,  2.9, 'economy',  0.00, NULL),
 -- Cursa 18
-(9,  12, 'Ride Finished', 'Centrul Vechi Cluj',              'Parcul Babes',                DATE_SUB(CURDATE(),INTERVAL 6  DAY), '18:20:00','18:21:00','18:31:00',  8.70,  7.00,  3.0, 'economy',  1.00, NULL),
+(9,  12, 'Finalizat', 'Centrul Vechi Cluj',              'Parcul Babes',                DATE_SUB(CURDATE(),INTERVAL 6  DAY), '18:20:00','18:21:00','18:31:00',  8.70,  7.00,  3.0, 'economy',  1.00, NULL),
 -- Cursa 19
-(11, 6,  'Ride Finished', 'Bd. Bucurestii Noi 14, Bucuresti','Piata Presei Libere',         DATE_SUB(CURDATE(),INTERVAL 5  DAY), '09:00:00','09:01:00','09:11:00', 11.90, 13.00,  4.1, 'premium',  3.00, 'VIP30'),
+(11, 6,  'Finalizat', 'Bd. Bucurestii Noi 14, Bucuresti','Piata Presei Libere',         DATE_SUB(CURDATE(),INTERVAL 5  DAY), '09:00:00','09:01:00','09:11:00', 11.90, 13.00,  4.1, 'premium',  3.00, 'VIP30'),
 -- Cursa 20
-(4,  8,  'Ride Finished', 'Calea Victoriei 88, Bucuresti',   'Cimitirul Bellu',             DATE_SUB(CURDATE(),INTERVAL 4  DAY), '14:00:00','14:02:00','14:19:00', 17.50, 19.00,  6.0, 'premium',  0.00, NULL),
+(4,  8,  'Finalizat', 'Calea Victoriei 88, Bucuresti',   'Cimitirul Bellu',             DATE_SUB(CURDATE(),INTERVAL 4  DAY), '14:00:00','14:02:00','14:19:00', 17.50, 19.00,  6.0, 'premium',  0.00, NULL),
 -- Cursa 21
-(6,  1,  'Ride Finished', 'Piata Palatului, Iasi',           'Manastirea Trei Ierarhi',     DATE_SUB(CURDATE(),INTERVAL 3  DAY), '10:10:00','10:11:00','10:21:00', 10.15, 11.00,  3.5, 'economy',  2.00, NULL),
+(6,  1,  'Finalizat', 'Piata Palatului, Iasi',           'Manastirea Trei Ierarhi',     DATE_SUB(CURDATE(),INTERVAL 3  DAY), '10:10:00','10:11:00','10:21:00', 10.15, 11.00,  3.5, 'economy',  2.00, NULL),
 -- Cursa 22
-(7,  5,  'Ride Finished', 'Bd. Magheru 45, Bucuresti',       'Piata Charles de Gaulle',     DATE_SUB(CURDATE(),INTERVAL 2  DAY), '16:00:00','16:01:00','16:09:00',  8.12,  7.00,  2.8, 'standard', 0.00, NULL),
+(7,  5,  'Finalizat', 'Bd. Magheru 45, Bucuresti',       'Piata Charles de Gaulle',     DATE_SUB(CURDATE(),INTERVAL 2  DAY), '16:00:00','16:01:00','16:09:00',  8.12,  7.00,  2.8, 'standard', 0.00, NULL),
 -- Cursa 23
-(99, 99, 'Ride Finished', 'Str. Principala 1, Bucuresti',    'Piata Universitatii',         DATE_SUB(CURDATE(),INTERVAL 1  DAY), '12:00:00','12:01:00','12:18:00', 20.30, 22.00,  7.0, 'standard', 5.00, 'WELCOME10');
+(99, 99, 'Finalizat', 'Str. Principala 1, Bucuresti',    'Piata Universitatii',         DATE_SUB(CURDATE(),INTERVAL 1  DAY), '12:00:00','12:01:00','12:18:00', 20.30, 22.00,  7.0, 'standard', 5.00, 'WELCOME10');
 
 -- ------------------------------------------------------------ --
 -- 4.6 CURSE ACTIVE SI ANULATE                                  --
@@ -311,13 +311,13 @@ INSERT INTO cursa (client_id_client, sofer_id_sofer, status, plecare, destinatie
 INSERT INTO cursa (client_id_client, sofer_id_sofer, status, plecare, destinatie,
                    data_comanda, ora_comanda, pret_estimat, distanta, categorie) VALUES
 -- In asteptare sofer
-(8,  NULL, 'Waiting Driver', 'Str. Republicii 15, Brasov', 'Centrul Brasov',          CURDATE(), '10:00:00', 12.18, 4.2, 'standard'),
-(13, NULL, 'Waiting Driver', 'Str. Stefan cel Mare 18, Iasi','Teatrul National Iasi', CURDATE(), '11:30:00',  8.41, 2.9, 'economy'),
+(8,  NULL, 'In asteptare', 'Str. Republicii 15, Brasov', 'Centrul Brasov',          CURDATE(), '10:00:00', 12.18, 4.2, 'standard'),
+(13, NULL, 'In asteptare', 'Str. Stefan cel Mare 18, Iasi','Teatrul National Iasi', CURDATE(), '11:30:00',  8.41, 2.9, 'economy'),
 -- In cursa
-(10, 3,   'In ride',        'Bd. Dacia 33, Bucuresti',    'Aeroportul Otopeni',       CURDATE(), '09:00:00', 56.55,23.5, 'economy'),
+(10, 3,   'In cursa',        'Bd. Dacia 33, Bucuresti',    'Aeroportul Otopeni',       CURDATE(), '09:00:00', 56.55,23.5, 'economy'),
 -- Anulate
-(14, NULL, 'Canceled',      'Str. Independentei 27, Ploiesti','Mall Ploiesti Sud',    DATE_SUB(CURDATE(),INTERVAL 5 DAY),'15:00:00', 14.50, 5.0, 'standard'),
-(12, NULL, 'Canceled',      'Str. Libertatii 5, Craiova', 'Spitalul Judetean',        DATE_SUB(CURDATE(),INTERVAL 3 DAY),'08:20:00',  9.57, 3.3, 'economy');
+(14, NULL, 'Anulat',      'Str. Independentei 27, Ploiesti','Mall Ploiesti Sud',    DATE_SUB(CURDATE(),INTERVAL 5 DAY),'15:00:00', 14.50, 5.0, 'standard'),
+(12, NULL, 'Anular',      'Str. Libertatii 5, Craiova', 'Spitalul Judetean',        DATE_SUB(CURDATE(),INTERVAL 3 DAY),'08:20:00',  9.57, 3.3, 'economy');
 
 -- ------------------------------------------------------------ --
 -- 4.7 PLATI (pentru cursele finalizate)                        --
@@ -326,18 +326,18 @@ INSERT INTO cursa (client_id_client, sofer_id_sofer, status, plecare, destinatie
 INSERT INTO plata (cursa_id_cursa, metoda_plata, data_ora, status, suma, tips) VALUES
                                                                                    ( 1, 'Card',      DATE_SUB(NOW(),INTERVAL 25 DAY), 1,  61.00, 5.00),
                                                                                    ( 2, 'Cash',      DATE_SUB(NOW(),INTERVAL 23 DAY), 1,  13.00, 0.00),
-                                                                                   ( 3, 'Apple Pay', DATE_SUB(NOW(),INTERVAL 22 DAY), 1,  35.10,10.00),  -- 39 - 10% = 35.1
+                                                                                   ( 3, 'Cash',      DATE_SUB(NOW(),INTERVAL 22 DAY), 1,  35.10,10.00),  -- 39 - 10% = 35.1
                                                                                    ( 4, 'Card',      DATE_SUB(NOW(),INTERVAL 20 DAY), 1,  15.00, 2.00),
                                                                                    ( 5, 'Cash',      DATE_SUB(NOW(),INTERVAL 19 DAY), 1,  26.00, 0.00),
                                                                                    ( 6, 'Card',      DATE_SUB(NOW(),INTERVAL 18 DAY), 1,  10.00, 5.00),
-                                                                                   ( 7, 'Apple Pay', DATE_SUB(NOW(),INTERVAL 17 DAY), 1,  30.40, 3.00),  -- 38 - 20% = 30.4
+                                                                                   ( 7, 'Card',      DATE_SUB(NOW(),INTERVAL 17 DAY), 1,  30.40, 3.00),  -- 38 - 20% = 30.4
                                                                                    ( 8, 'Cash',      DATE_SUB(NOW(),INTERVAL 16 DAY), 1,  32.00, 0.00),
                                                                                    ( 9, 'Card',      DATE_SUB(NOW(),INTERVAL 15 DAY), 1,   8.00, 2.00),
                                                                                    (10, 'Cash',      DATE_SUB(NOW(),INTERVAL 14 DAY), 1,  17.00, 0.00),
                                                                                    (11, 'Card',      DATE_SUB(NOW(),INTERVAL 13 DAY), 1,  17.50, 5.00),  -- 25 - 30% = 17.5
                                                                                    (12, 'Cash',      DATE_SUB(NOW(),INTERVAL 12 DAY), 1,  12.00, 0.00),
                                                                                    (13, 'Card',      DATE_SUB(NOW(),INTERVAL 11 DAY), 1,  13.00, 0.00),
-                                                                                   (14, 'Apple Pay', DATE_SUB(NOW(),INTERVAL 10 DAY), 1,  28.00, 7.00),
+                                                                                   (14, 'Cash',      DATE_SUB(NOW(),INTERVAL 10 DAY), 1,  28.00, 7.00),
                                                                                    (15, 'Cash',      DATE_SUB(NOW(),INTERVAL  9 DAY), 1,  19.00, 0.00),  -- 34 - 15fix = 19
                                                                                    (16, 'Card',      DATE_SUB(NOW(),INTERVAL  8 DAY), 1,  14.00, 5.00),
                                                                                    (17, 'Cash',      DATE_SUB(NOW(),INTERVAL  7 DAY), 1,   9.00, 0.00),
