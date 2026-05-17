@@ -112,7 +112,7 @@ Aplicatia ruleaza pe `http://localhost:5173`
 |---|---|---|
 | Client | `client@site.test` | `client` |
 | Sofer | `sofer@site.test` | `sofer` |
-| Admin | *(orice email)* | `admin123` |
+| Admin | *-* | `admin123` |
 
 Exista de asemenea 15 clienti si 15 soferi generati automat (parola: `client123` / `sofer123`).
 
