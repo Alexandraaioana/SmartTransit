@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 export default function AdminHistory() {
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<any[]>([]);
 
   const fetchHistory = async () => {
     try {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 export default function AdminDiscounts() {
-  const [discounts, setDiscounts] = useState([]);
+  const [discounts, setDiscounts] = useState<any[]>([]);
   const [formData, setFormData] = useState({ cod_discount: '', valoare: '', data_expirare: '', tip_valoare: 'procent' });
 
   const fetchDiscounts = async () => {

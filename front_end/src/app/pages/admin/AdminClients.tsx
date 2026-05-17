@@ -4,7 +4,7 @@ import { Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AdminClients() {
-  const [clients, setClients] = useState([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [formData, setFormData] = useState({ id_client: null, nume: '', nr_tel: '', mail: '', parola: '' });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -80,7 +80,7 @@ export default function AdminClients() {
 
   const tableRowVariants = {
     hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   return (

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 export default function AdminCars() {
-  const [cars, setCars] = useState([]);
-  const [freeDrivers, setFreeDrivers] = useState([]);
+  const [cars, setCars] = useState<any[]>([]);
+  const [freeDrivers, setFreeDrivers] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     sofer_id_sofer: '', nr_inmatriculare: '', model: '', categorie: 'Standard', culoare: '', an_fabricare: 2024
   });

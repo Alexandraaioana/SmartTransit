@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { Eye } from 'lucide-react';
 
 export default function AdminDrivers() {
-  const [drivers, setDrivers] = useState([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
   const [formData, setFormData] = useState({ id_sofer: null, nume: '', telefon: '', mail: '', parola: '', cnp: '' });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -75,7 +75,7 @@ export default function AdminDrivers() {
 
   const tableRowVariants = {
     hidden: { opacity: 0, x: -10 },
-    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    show: { opacity: 1, x: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
   };
 
   return (

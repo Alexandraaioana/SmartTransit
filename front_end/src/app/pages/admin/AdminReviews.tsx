@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Star, Trash2 } from 'lucide-react';
 
 export default function AdminReviews() {
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   const fetchReviews = async () => {
     try {
