@@ -93,7 +93,7 @@ export default function AdminDashboard() {
             <Users className="w-8 h-8" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-medium">Clienți Activi</p>
+            <p className="text-sm text-slate-500 font-medium">Clienți activi</p>
             <p className="text-2xl font-bold text-slate-800">
               {/* Folosim componenta animată în loc de text simplu */}
               <AnimatedNumber value={stats.total_clienti} />
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
             <Car className="w-8 h-8" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-medium">Șoferi Activi</p>
+            <p className="text-sm text-slate-500 font-medium">Șoferi activi</p>
             <p className="text-2xl font-bold text-slate-800">
               <AnimatedNumber value={stats.total_soferi} />
             </p>
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
             <MapPin className="w-8 h-8" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-medium">Curse Totale</p>
+            <p className="text-sm text-slate-500 font-medium">Total rides</p>
             <p className="text-2xl font-bold text-slate-800">
               <AnimatedNumber value={stats.total_curse} />
             </p>
