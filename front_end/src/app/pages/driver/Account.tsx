@@ -6,7 +6,6 @@ export default function DriverAccount() {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  //modul de upload pt certificat
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [newCert, setNewCert] = useState({
     tip: 'Driver License',
@@ -193,12 +192,12 @@ export default function DriverAccount() {
   return (
       <div className="p-8 max-w-4xl mx-auto pb-20 relative">
 
-        {/* === MODAL UPLOAD CERTIFICAT === */}
+        {/* UPLOAD CERTIFICAT */}
         {showUploadModal && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
               <div className="bg-card p-8 rounded-xl shadow-2xl w-full max-w-md border border-border">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-bold text-foreground">Upload Document</h3>
+                  <h3 className="text-xl font-bold text-foreground">Încarcă document</h3>
                   <button onClick={() => setShowUploadModal(false)} className="text-muted-foreground hover:text-red-500">
                     <X size={24} />
                   </button>
@@ -206,21 +205,21 @@ export default function DriverAccount() {
 
                 <div className="flex flex-col gap-4 mb-6">
                   <div>
-                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">Document Type</label>
+                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">Tip document</label>
                     <select
                         className="w-full bg-muted p-3 rounded-lg border border-border outline-none focus:border-primary"
                         value={newCert.tip}
                         onChange={(e) => setNewCert({...newCert, tip: e.target.value})}
                     >
-                      <option value="Driver License">Driver License</option>
-                      <option value="Vehicle Registration">Vehicle Registration</option>
-                      <option value="Insurance Certificate">Insurance Certificate</option>
-                      <option value="Background Check">Background Check</option>
+                      <option value="Driver License">Permis</option>
+                      <option value="Vehicle Registration">Înregistrare vihicul</option>
+                      <option value="Insurance Certificate">Certificat de asigurare</option>
+                      <option value="Background Check">Verificare istoric</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">Expiration Date</label>
+                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">Data exprirare</label>
                     <input
                         type="date"
                         className="w-full bg-muted p-3 rounded-lg border border-border outline-none focus:border-primary"
@@ -255,13 +254,13 @@ export default function DriverAccount() {
         )}
         {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Driver Profile</h1>
+          <h1 className="text-3xl font-bold">Profil șofer</h1>
           {!isEditing ? (
               <button
                   onClick={() => setIsEditing(true)}
                   className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-all font-semibold"
               >
-                Edit Profile
+                Editează profil
               </button>
           ) : (
               <div className="flex gap-2">
@@ -288,7 +287,7 @@ export default function DriverAccount() {
               </p>
 
               <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1 font-medium">
-                <Award size={16} className="text-yellow-500" /> Verified SmartTransit Partner
+                <Award size={16} className="text-yellow-500" /> Partener SmartTransit verificat
               </p>
             </div>
           </div>
@@ -305,7 +304,7 @@ export default function DriverAccount() {
             <div className="flex items-center gap-4">
               <div className="p-3 bg-muted rounded-full"><Phone className="text-primary" size={20} /></div>
               <div className="flex-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Phone Number</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Număr de telefon</p>
                 {isEditing ? (
                     <input
                         className="w-full bg-muted p-2 rounded border border-border focus:border-primary outline-none"
@@ -323,7 +322,7 @@ export default function DriverAccount() {
             <div className="flex items-center gap-4">
               <div className="p-3 bg-muted rounded-full"><FileText className="text-primary" size={20} /></div>
               <div className="flex-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Personal ID (CNP)</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">ID personal (CNP)</p>
                 {isEditing ? (
                     <input
                         className="w-full bg-muted p-2 rounded border border-border focus:border-primary outline-none"
@@ -341,7 +340,7 @@ export default function DriverAccount() {
             <div className="flex items-center gap-4">
               <div className="p-3 bg-muted rounded-full"><Car className="text-primary" size={20} /></div>
               <div className="flex-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Vehicle Registration</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Înregistrare vehicul</p>
                 {isEditing ? (
                     <input
                         className="w-full bg-muted p-2 rounded border border-border focus:border-primary outline-none"
@@ -360,31 +359,31 @@ export default function DriverAccount() {
           {/* Card Total Trips */}
           <div className="bg-card rounded-lg p-6 border border-border shadow-sm flex flex-col justify-center">
             <div className="text-4xl text-primary font-light mb-1">{driver.totalTrips}</div>
-            <div className="text-sm text-muted-foreground font-medium">Total Trips</div>
+            <div className="text-sm text-muted-foreground font-medium">Total curse</div>
           </div>
           {/* Card Average Rating */}
           <div className="bg-card rounded-lg p-6 border border-border shadow-sm flex flex-col justify-center">
             <div className="text-4xl text-primary font-light mb-1">{driver.rating}</div>
-            <div className="text-sm text-muted-foreground font-medium">Average Rating</div>
+            <div className="text-sm text-muted-foreground font-medium">Rating</div>
           </div>
           {/* Card Total Earnings */}
           <div className="bg-card rounded-lg p-6 border border-border shadow-sm flex flex-col justify-center">
-            {/* Afișăm suma formatată ca monedă (LEI sau USD) */}
+            {/* Afișăm suma formatată ca monedă */}
             <div className="text-4xl text-primary font-light mb-1">
               {driver.totalEarnings.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} lei
             </div>
-            <div className="text-sm text-muted-foreground font-medium">Total Earnings</div>
+            <div className="text-sm text-muted-foreground font-medium">Total câștig</div>
           </div>
         </div>
         {/* === CARD DETALII VEHICUL === */}
         <div className="bg-card rounded-lg p-8 border border-border shadow-md mt-8">
-          <h3 className="text-2xl font-bold mb-6 text-foreground">Vehicle Details</h3>
+          <h3 className="text-2xl font-bold mb-6 text-foreground">Detalii vehicul</h3>
 
           <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
 
             {/* Make & Model */}
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Make & Model</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">An & Model</p>
               {isEditing ? (
                   <input
                       className="w-full bg-muted p-2 rounded border border-border focus:border-primary outline-none"
@@ -399,7 +398,7 @@ export default function DriverAccount() {
 
             {/* License Plate */}
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">License Plate</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Număr de înmatriculare</p>
               {isEditing ? (
                   <input
                       className="w-full bg-muted p-2 rounded border border-border focus:border-primary outline-none"
@@ -414,7 +413,7 @@ export default function DriverAccount() {
 
             {/* Color */}
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Color</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Culoare</p>
               {isEditing ? (
                   <input
                       className="w-full bg-muted p-2 rounded border border-border focus:border-primary outline-none"
@@ -445,7 +444,7 @@ export default function DriverAccount() {
 
             {/* Category */}
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Category</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Categorie</p>
               {isEditing ? (
                   <select
                       className="w-full bg-muted p-2 rounded border border-border focus:border-primary outline-none"
@@ -464,7 +463,7 @@ export default function DriverAccount() {
 
             {/* KM Parcursi */}
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Mileage (Km)</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-2">Kilometraj (Km)</p>
               <p className="text-lg font-medium text-foreground">
                 {driver.km_parcursi ? `${Number(driver.km_parcursi).toLocaleString()} km` : '0 km'}
               </p>
@@ -477,11 +476,10 @@ export default function DriverAccount() {
           </div>
         </div>
 
-        {/* CERTIFICATE & DOCUMENTS */}
+        {/* CERTIFICATE & DOCUMENTE */}
         <div className="bg-card rounded-lg p-8 border border-border shadow-md mt-8">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-[#1B2B48]">Certificates & Documents</h3>
-            {/* AM ADAUGAT EVENIMENTUL ONCLICK PE BUTONUL UPLOAD */}
+            <h3 className="text-2xl font-bold text-[#1B2B48]">Certificate & Documente</h3>
             <button
                 onClick={() => setShowUploadModal(true)}
                 className="text-sm font-semibold text-[#B88645] hover:text-[#9A6D33] transition-colors"
@@ -526,7 +524,7 @@ export default function DriverAccount() {
                 })
             ) : (
                 <p className="text-muted-foreground italic bg-muted p-4 rounded-lg text-center">
-                  No documents uploaded yet.
+                  Niciun document nu a fost încărcat.
                 </p>
             )}
           </div>

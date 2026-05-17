@@ -44,7 +44,7 @@ export default function AdminCars() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Flota Auto (Relație 1:1)</h2>
+      <h2 className="text-2xl font-bold mb-6">Flota auto</h2>
 
       {/* Formular */}
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm mb-8 grid grid-cols-3 gap-4 items-end border">

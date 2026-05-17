@@ -68,7 +68,7 @@ export default function Login() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-12">
-          <h1 className="text-4xl mb-2 text-primary">RideShare</h1>
+          <h1 className="text-4xl mb-2 text-primary">SmartTransit</h1>
           <p className="text-muted-foreground">Your journey starts here</p>
         </div>
 
