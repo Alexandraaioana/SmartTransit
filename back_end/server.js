@@ -8,7 +8,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 //LUCA
-// Configurare conexiune baza de date pentru DBngin
+// Configurare conexiune baza de date pentru Windows
 /*const db = mysql.createConnection({
     host: 'localhost', 
     user: 'root',      
@@ -18,6 +18,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 });*/
 
 // Alexandra
+// Configurare conexiune baza de date pentru MAC
 /*const db = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
@@ -45,9 +46,6 @@ db.connect((err) => {
 });
 
 // --- RUTE API GENERALE ---
-//poti cand modifici sa pui rutele de ai nevoie pentru client dupa sistemul de autentificare si crearee cont ori inainte de driver ori dupa. nu cont.
-// Istoricul curselor pentru Client
-
 // RUTA PENTRU DATELE SI STATISTICILE CLIENTULUI
 app.get('/api/client-stats/:id', (req, res) => {
     const clientId = req.params.id;
@@ -62,7 +60,6 @@ app.get('/api/client-stats/:id', (req, res) => {
         WHERE c.id_client = ?
         GROUP BY c.id_client
     `;
-
     db.query(query, [clientId], (err, results) => {
         if (err) {
             console.error("Eroare la extragere stats client:", err);
@@ -92,14 +89,11 @@ app.get('/api/client-stats/:id', (req, res) => {
             `;
         } else {
             // CLIENT
-            // aici faci modificarile daca ai nevoie de ceva legat de login pentru client. TE ROG NU MODIFICA PT DRIVER SI NU FACE ALTA METODA DE LOGIN CA SE FUTE
-            // AM INCERCAT SA LE SEPAR!
             query = `SELECT *
                      FROM client
                      WHERE mail = ?
                        AND parola = ?`;
         }
-
         db.query(query, [email, parola], (err, results) => {
             if (err) return res.status(500).json({success: false, message: 'Eroare de server'});
             if (results.length > 0) {
@@ -361,7 +355,6 @@ app.get('/api/driver-reviews/:id_sofer', (req, res) => {
             });
         });
     });
-// 4. ruta de terminare a calatoriei(update status 'Ride Finished')
 // 4. ruta de terminare a calatoriei (update status 'Ride Finished' si Calcul Discount)
     app.post('/api/end-ride', (req, res) => {
         const { id_cursa, id_sofer } = req.body;
