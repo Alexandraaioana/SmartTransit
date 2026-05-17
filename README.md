@@ -115,6 +115,7 @@ Aplicatia ruleaza pe `http://localhost:5173`
 | Admin | *-* | `admin123` |
 
 Exista de asemenea 15 clienti si 15 soferi generati automat (parola: `client123` / `sofer123`).
+Pentru accestarea paginii de administrator se va adauga la final /#/admin
 
 ---
 
