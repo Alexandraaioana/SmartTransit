@@ -21,8 +21,7 @@ Aplicatie web de tip taxi/ride-sharing cu panou de administrare, interfata pentr
 SmartTransit/
 ├── back_end/
 │   ├── server.js          # API Express cu toate rutele
-│   ├── package.json
-│   └── .env               # Creat de tine (vezi .env.example)
+│   └── package.json
 ├── front_end/
 │   ├── src/
 │   │   ├── app/
@@ -36,8 +35,7 @@ SmartTransit/
 │   └── package.json
 ├── sql/
 │   └── console.sql        # Schema BD + date de test
-├── seed.py                # Script Python pentru populare automata BD
-└── .env.example           # Template variabile de mediu
+└── seed.py                # Script Python pentru populare automata BD
 ```
 
 ---
